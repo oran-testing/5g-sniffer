@@ -3,6 +3,8 @@
 FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND noninteractive
 
+ENV CONFIG="/5gsniffer/5gsniffer/SpriteLab-Private5G.toml"
+
 WORKDIR /5gsniffer
 RUN apt -y update
 RUN apt -y install git cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev libliquid-dev libconfig++-dev libzmq3-dev libspdlog-dev libfmt-dev libuhd-dev uhd-host clang
@@ -17,4 +19,4 @@ ENV CC /usr/bin/clang-14
 RUN cmake -DCMAKE_C_COMPILER=/usr/bin/clang-14 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-14 ..
 RUN make 
 
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/5gsniffer/5gsniffer/build/src/5gsniffer", "$CONFIG"]
