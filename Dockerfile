@@ -3,7 +3,7 @@
 FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND noninteractive
 
-ENV CONFIG="/5gsniffer/5gsniffer/SpriteLab-Private5G.toml"
+ENV CONFIG "/5gsniffer/5gsniffer/SpriteLab-Private5G.toml"
 
 WORKDIR /5gsniffer
 RUN apt -y update
@@ -14,9 +14,11 @@ WORKDIR /5gsniffer/5gsniffer
 RUN mkdir -p build
 
 WORKDIR /5gsniffer/5gsniffer/build
+
 ENV CXX /usr/bin/clang++-14
 ENV CC /usr/bin/clang-14
+
 RUN cmake -DCMAKE_C_COMPILER=/usr/bin/clang-14 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-14 ..
-RUN make 
+RUN make -j$(nproc)
 
 ENTRYPOINT ["/5gsniffer/5gsniffer/build/src/5gsniffer", "$CONFIG"]
