@@ -8,7 +8,8 @@ ENV CONFIG "/5gsniffer/5gsniffer/SpriteLab-Private5G.toml"
 WORKDIR /5gsniffer
 RUN apt -y update
 RUN apt -y install git cmake make gcc g++ pkg-config libfftw3-dev libmbedtls-dev libsctp-dev libyaml-cpp-dev libgtest-dev libliquid-dev libconfig++-dev libzmq3-dev libspdlog-dev libfmt-dev libuhd-dev uhd-host clang
-RUN git clone --recurse-submodules https://github.com/spritelab/5GSniffer.git .
+
+COPY . .
 
 WORKDIR /5gsniffer/5gsniffer
 RUN mkdir -p build
