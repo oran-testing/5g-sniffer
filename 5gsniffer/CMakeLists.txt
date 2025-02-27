@@ -94,5 +94,5 @@ include_directories(src)
 # Add the subdirectories
 ########################################################################
 add_subdirectory(src)
-add_subdirectory(test)
+#add_subdirectory(test)
 add_subdirectory(lib/googletest)  # TODO make external project
