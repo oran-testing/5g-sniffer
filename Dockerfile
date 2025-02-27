@@ -22,4 +22,5 @@ ENV CC /usr/bin/clang-14
 RUN cmake -DCMAKE_C_COMPILER=/usr/bin/clang-14 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-14 ..
 RUN make -j$(nproc)
 
-ENTRYPOINT ["/5gsniffer/5gsniffer/build/src/5gsniffer", "$CONFIG"]
+#ENTRYPOINT ["/5gsniffer/5gsniffer/build/src/5gsniffer", "$CONFIG"]
+CMD ["/5gsniffer/5gsniffer/build/src/5g_sniffer", "$CONFIG"]
