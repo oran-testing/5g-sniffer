@@ -57,7 +57,8 @@ endif(ENABLE_UHD)
 
 # srsRAN
 ExternalProject_Add(srsRAN
-  #GIT_REPOSITORY    git@github.com:oran-testing/srsRANRF
+  # Don't clone the repo because this is done using git submodules
+  #GIT_REPOSITORY    git@github.com:NorbLd/srsRANRF
   #GIT_TAG           origin/vanilla
   SOURCE_DIR ../lib/srsRANRF/
   PREFIX lib/srsRANRF
