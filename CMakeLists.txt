@@ -26,6 +26,7 @@ find_package(spdlog REQUIRED)
 add_compile_definitions(SPDLOG_ACTIVE_LEVEL=1)
 
 include_directories(include)
-include_directories(src)
+include_directories(lib/lib/include)
 
+add_subdirectory(lib)
 add_subdirectory(src)

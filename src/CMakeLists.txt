@@ -9,6 +9,7 @@ set(SNIFFER_SOURCES config.cc main.cc file_sink.cc file_source.cc sdr.cc pss.cc 
 
 # Add the executables
 add_executable(replay-agent ${SNIFFER_SOURCES})
+add_dependencies(replay-agent srsran_phy srsran_common srsran_rf)
 
 target_link_libraries(replay-agent
 srsran_phy srsran_common srsran_rf spdlog::spdlog volk liquid zmq)

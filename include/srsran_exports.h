@@ -1,6 +1,7 @@
 #ifndef SRSRAN_EXPORTS_H
 #define SRSRAN_EXPORTS_H
 
+#include <srsran/phy/phch/pbch_msg_nr.h>
 #include <srsran/srsran.h>
 
 extern "C" {

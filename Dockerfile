@@ -15,19 +15,13 @@ COPY . .
 
 RUN mkdir -p build && rm -rf build/*
 
-WORKDIR /replay-agent/lib/
-RUN mkdir -p build && rm -rf build/*
-
-WORKDIR /replay-agent/lib/build
-RUN cmake .. && make -j$(nproc) && make install
-
 WORKDIR /replay-agent/build
 
 ENV CXX /usr/bin/clang++-14
 ENV CC /usr/bin/clang-14
 
 RUN cmake -DCMAKE_C_COMPILER=/usr/bin/clang-14 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-14 ..
-RUN make -j$(nproc)
+#RUN make -j$(nproc)
 
 #CMD ["sh", "-c", "/5gsniffer/5gsniffer/build/src/5g_sniffer \"$CONFIG\""]
 CMD ["/bin/bash"]
