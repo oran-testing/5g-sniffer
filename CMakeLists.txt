@@ -69,8 +69,6 @@ option(AUTO_DETECT_ISA       "Autodetect supported ISA extensions"      ON)
 
 option(ENABLE_RF_PLUGINS     "Enable RF plugins"                        ON)
 option(ENABLE_UHD            "Enable UHD"                               ON)
-option(ENABLE_BLADERF        "Enable BladeRF"                           ON)
-option(ENABLE_SOAPYSDR       "Enable SoapySDR"                          ON)
 option(ENABLE_SKIQ           "Enable Sidekiq SDK"                       ON)
 option(ENABLE_ZEROMQ         "Enable ZeroMQ"                            ON)
 option(ENABLE_HARDSIM        "Enable support for SIM cards"             ON)
@@ -193,17 +191,6 @@ else(MBEDTLS_FOUND)
   message(FATAL_ERROR "mbedTLS is required to build srsRAN")
 endif (MBEDTLS_FOUND)
 
-# Hard-SIM support
-if(ENABLE_HARDSIM)
-  find_package(PCSCLite)
-  if (PCSCLITE_FOUND)
-    message(STATUS "Building with PCSC support.")
-    add_definitions(-DHAVE_PCSC)
-    set(HAVE_PCSC TRUE)
-    include_directories(${PCSCLITE_INCLUDE_DIR})
-    #link_directories(${PCSCLITE_LIBRARIES})
-  endif (PCSCLITE_FOUND)
-endif(ENABLE_HARDSIM)
 
 # UHD
 if(ENABLE_UHD)
@@ -224,22 +211,22 @@ if (ENABLE_SKIQ)
 endif (ENABLE_SKIQ)
 
 # BladeRF
-if(ENABLE_BLADERF)
-  find_package(bladeRF)
-  if(BLADERF_FOUND)
-    include_directories(${BLADERF_INCLUDE_DIRS})
-    link_directories(${BLADERF_LIBRARY_DIRS})
-  endif(BLADERF_FOUND)
-endif(ENABLE_BLADERF)
+#if(ENABLE_BLADERF)
+#  find_package(bladeRF)
+#  if(BLADERF_FOUND)
+#    include_directories(${BLADERF_INCLUDE_DIRS})
+#    link_directories(${BLADERF_LIBRARY_DIRS})
+#  endif(BLADERF_FOUND)
+#endif(ENABLE_BLADERF)
 
 # Soapy
-if(ENABLE_SOAPYSDR)
-  find_package(SoapySDR)
-  if(SOAPYSDR_FOUND)
-    include_directories(${SOAPYSDR_INCLUDE_DIRS})
-    link_directories(${SOAPYSDR_LIBRARY_DIRS})
-  endif(SOAPYSDR_FOUND)
-endif(ENABLE_SOAPYSDR)
+#if(ENABLE_SOAPYSDR)
+#  find_package(SoapySDR)
+#  if(SOAPYSDR_FOUND)
+#    include_directories(${SOAPYSDR_INCLUDE_DIRS})
+#    link_directories(${SOAPYSDR_LIBRARY_DIRS})
+#  endif(SOAPYSDR_FOUND)
+#endif(ENABLE_SOAPYSDR)
 
 # ZeroMQ
 if(ENABLE_ZEROMQ)
@@ -276,23 +263,7 @@ endif(UHD_FOUND)
 if(UNIX AND EXISTS "/usr/lib64")
   list(APPEND BOOST_LIBRARYDIR "/usr/lib64") #fedora 64-bit fix
 endif(UNIX AND EXISTS "/usr/lib64")
-set(Boost_ADDITIONAL_VERSIONS
-    "1.35.0" "1.35" "1.36.0" "1.36" "1.37.0" "1.37" "1.38.0" "1.38" "1.39.0" "1.39"
-    "1.40.0" "1.40" "1.41.0" "1.41" "1.42.0" "1.42" "1.43.0" "1.43" "1.44.0" "1.44"
-    "1.45.0" "1.45" "1.46.0" "1.46" "1.47.0" "1.47" "1.48.0" "1.48" "1.49.0" "1.49"
-    "1.50.0" "1.50" "1.51.0" "1.51" "1.52.0" "1.52" "1.53.0" "1.53" "1.54.0" "1.54"
-    "1.55.0" "1.55" "1.56.0" "1.56" "1.57.0" "1.57" "1.58.0" "1.58" "1.59.0" "1.59"
-    "1.60.0" "1.60" "1.61.0" "1.61" "1.62.0" "1.62" "1.63.0" "1.63" "1.64.0" "1.64"
-    "1.65.0" "1.65" "1.66.0" "1.66" "1.67.0" "1.67" "1.68.0" "1.68" "1.69.0" "1.69"
-)
-find_package(Boost "1.35" COMPONENTS ${BOOST_REQUIRED_COMPONENTS})
 
-if(Boost_FOUND)
-  include_directories(${Boost_INCLUDE_DIRS})
-  link_directories(${Boost_LIBRARY_DIRS})
-else(Boost_FOUND)
-  message(FATAL_ERROR "Boost required to build srsRAN")
-endif (Boost_FOUND)
 
 if (ENABLE_TTCN3)
   find_package(RapidJSON REQUIRED)
@@ -649,11 +620,8 @@ foreach(_header ${headers})
 endforeach()
 add_custom_target(add_srsran_headers SOURCES ${HEADERS_ALL})
 
-# # # # # # ##################################################################
-# Add the subdirectories
-# # # # # # ##################################################################
+
+include_directories(lib/include)
 add_subdirectory(lib)
 
-include_directories(include)
-include_directories(lib/include)
 add_subdirectory(replay-agent)

@@ -1,10 +1,10 @@
 [sniffer]
-#file_path = "/home/secureslicing/5GSniffer/5gsniffer/iq_datawithtraffic.fc32"
+file_path = "/home/gnb/iq_datawithtraffic.fc32"
 sample_rate = 23040000
 frequency = 1842500000
 nid_1 = 1
 ssb_numerology = 0
-rf_args = "type=b200,master_clock_rate=23.04e6"
+#rf_args = "type=b200,master_clock_rate=23.04e6"
 
 
 [[pdcch]]
