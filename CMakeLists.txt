@@ -656,4 +656,4 @@ add_subdirectory(lib)
 
 include_directories(include)
 include_directories(lib/include)
-add_subdirectory(src)
+add_subdirectory(replay-agent)
