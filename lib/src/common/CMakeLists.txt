@@ -65,4 +65,3 @@ target_compile_definitions(srsran_common PRIVATE ${BACKWARD_DEFINITIONS})
 
 install(TARGETS srsran_common DESTINATION ${LIBRARY_DIR} OPTIONAL)
 
-add_subdirectory(test)

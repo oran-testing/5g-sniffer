@@ -45,8 +45,8 @@ include(SRSRANPackage) #setup cpack
 include(CTest)
 
 configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/CTestCustom.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/CTestCustom.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/CTestCustom.cmake"
     IMMEDIATE @ONLY)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -543,12 +543,12 @@ endif(ENABLE_TIDY)
 # Create uninstall targets
 # # # # # # ##################################################################
 configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake"
     IMMEDIATE @ONLY)
 
 add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake/cmake_uninstall.cmake)
 
 # # # # # # ##################################################################
 # Create optional target to build osmo-gsm-tester trial
