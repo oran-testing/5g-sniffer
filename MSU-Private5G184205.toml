@@ -1,5 +1,5 @@
 [sniffer]
-file_path = "/home/gnb/iq_datawithtraffic.fc32"
+file_path = "/home/oran-testbed/5g-sniffer/iq_1842MHz_pdcch_traffic.fc32"
 sample_rate = 23040000
 frequency = 1842500000
 nid_1 = 1

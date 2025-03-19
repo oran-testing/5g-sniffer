@@ -158,6 +158,22 @@ endif()
 # Threads
 find_package(Threads REQUIRED)
 
+# Liquid DSP
+if (LIQUID_INCLUDES)
+  # Already in cache, be silent
+  set (LIQUID_FIND_QUIETLY TRUE)
+endif (LIQUID_INCLUDES)
+
+find_path (LIQUID_INCLUDES liquid/liquid.h)
+
+find_library (LIQUID_LIBRARIES NAMES liquid)
+
+# handle the QUIETLY and REQUIRED arguments and set LIQUID_FOUND to TRUE if
+# all listed variables are TRUE
+include (FindPackageHandleStandardArgs)
+find_package_handle_standard_args (LIQUID DEFAULT_MSG LIQUID_LIBRARIES LIQUID_INCLUDES)
+
+
 # FFT
 if(USE_MKL)
   find_package(MKL REQUIRED)
