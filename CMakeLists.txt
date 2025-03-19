@@ -31,7 +31,7 @@ endif(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR})
 # Project setup
 # # # # # # ##################################################################
 cmake_minimum_required(VERSION 3.5)
-project( replay-agent )
+project( 5g-sniffer )
 message( STATUS "CMAKE_SYSTEM: " ${CMAKE_SYSTEM} )
 message( STATUS "CMAKE_SYSTEM_PROCESSOR: " ${CMAKE_SYSTEM_PROCESSOR} )
 message( STATUS "CMAKE_CXX_COMPILER: " ${CMAKE_CXX_COMPILER} )
@@ -640,4 +640,4 @@ add_custom_target(add_srsran_headers SOURCES ${HEADERS_ALL})
 include_directories(lib/include)
 add_subdirectory(lib)
 
-add_subdirectory(replay-agent)
+add_subdirectory(5g-sniffer)
