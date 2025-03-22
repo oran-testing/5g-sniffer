@@ -2,9 +2,9 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-set(BINARY replay-agent_test)
+set(BINARY 5g-sniffer_test)
 
-file(GLOB_RECURSE SNIFFER_SOURCES LIST_DIRECTORIES false ../replay-agent/*.h ../replay-agent/*.cc)
+file(GLOB_RECURSE SNIFFER_SOURCES LIST_DIRECTORIES false ../5g-sniffer/*.h ../5g-sniffer/*.cc)
 file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cc)
 
 set(SOURCES ${TEST_SOURCES} ${SNIFFER_SOURCES})

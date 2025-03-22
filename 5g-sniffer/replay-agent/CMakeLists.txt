@@ -9,11 +9,11 @@ include_directories(
     ${ZEROMQ_INCLUDE_DIRS}
 )
 
-add_executable(replay-agent ${SNIFFER_SOURCES})
-add_dependencies(replay-agent srsran_phy srsran_common srsran_rf)
+add_executable(5g-sniffer ${SNIFFER_SOURCES})
+add_dependencies(5g-sniffer srsran_phy srsran_common srsran_rf)
 
-target_link_libraries(replay-agent
+target_link_libraries(5g-sniffer
                       fmt srsran_phy srsran_phch srsran_common
                       srsran_rf volk liquid zmq)
 
-install(TARGETS replay-agent DESTINATION /usr/local/bin OPTIONAL)
+install(TARGETS 5g-sniffer DESTINATION /usr/local/bin OPTIONAL)
