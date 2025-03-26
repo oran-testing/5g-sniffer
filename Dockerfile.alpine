@@ -1,0 +1,23 @@
+FROM ghcr.io/oran-testing/components_base
+
+WORKDIR /sniffer
+
+COPY . .
+
+RUN sed -i 's|#include "srsran/srslog/sink.h"|#include "srsran/srslog/sink.h"\n#undef stdout\n#undef stderr|g'   \
+    /sniffer/lib/src/srslog/sinks/stream_sink.h && \
+    sed -i '21s|.*|#include <sys/time.h>|g' /sniffer/lib/src/phy/io/netsource.c && \
+    sed -i -e '31,39s|.*||g' -e 's|#include <execinfo.h>||g' /sniffer/lib/src/common/backtrace.c && \
+    find /sniffer/lib -type f -exec sed -i 's|uint |unsigned int |g' {} +
+
+RUN mkdir -p build && rm -rf build/*
+
+WORKDIR /sniffer/build
+
+
+RUN cmake -DENABLE_ZEROMQ=OFF .. && \
+    make -j$(nproc) && \
+    make install
+
+CMD ["sh", "-c", "sniffer /sniffer.toml"]
+
