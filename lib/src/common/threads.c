@@ -28,33 +28,32 @@
 
 #include "srsran/common/threads.h"
 
-bool threads_new_rt(pthread_t* thread, void* (*start_routine)(void*), void* arg)
-{
+bool threads_new_rt(pthread_t *thread, void *(*start_routine)(void *),
+                    void *arg) {
   return threads_new_rt_prio(thread, start_routine, arg, -1);
 }
 
-bool threads_new_rt_prio(pthread_t* thread, void* (*start_routine)(void*), void* arg, int prio_offset)
-{
+bool threads_new_rt_prio(pthread_t *thread, void *(*start_routine)(void *),
+                         void *arg, int prio_offset) {
   return threads_new_rt_cpu(thread, start_routine, arg, -1, prio_offset);
 }
 
-bool threads_new_rt_mask(pthread_t* thread, void* (*start_routine)(void*), void* arg, int mask, int prio_offset)
-{
-  return threads_new_rt_cpu(thread,
-                            start_routine,
-                            arg,
-                            mask * 100,
-                            prio_offset); // we multiply mask by 100 to distinguish it from a single cpu core id
+bool threads_new_rt_mask(pthread_t *thread, void *(*start_routine)(void *),
+                         void *arg, int mask, int prio_offset) {
+  return threads_new_rt_cpu(
+      thread, start_routine, arg, mask * 100,
+      prio_offset); // we multiply mask by 100 to distinguish it from a single
+                    // cpu core id
 }
 
-bool threads_new_rt_cpu(pthread_t* thread, void* (*start_routine)(void*), void* arg, int cpu, int prio_offset)
-{
+bool threads_new_rt_cpu(pthread_t *thread, void *(*start_routine)(void *),
+                        void *arg, int cpu, int prio_offset) {
   bool ret = false;
 
-  pthread_attr_t     attr;
+  pthread_attr_t attr;
   struct sched_param param;
-  cpu_set_t          cpuset;
-  bool               attr_enable = false;
+  cpu_set_t cpuset;
+  bool attr_enable = false;
 
 #ifdef PER_THREAD_PRIO
   if (prio_offset >= 0) {
@@ -72,7 +71,8 @@ bool threads_new_rt_cpu(pthread_t* thread, void* (*start_routine)(void*), void* 
     }
     attr_enable = true;
   } else if (prio_offset == -1) {
-    param.sched_priority = sched_get_priority_max(SCHED_FIFO) - DEFAULT_PRIORITY;
+    param.sched_priority =
+        sched_get_priority_max(SCHED_FIFO) - DEFAULT_PRIORITY;
     pthread_attr_init(&attr);
     if (pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED)) {
       perror("pthread_attr_setinheritsched");
@@ -89,8 +89,8 @@ bool threads_new_rt_cpu(pthread_t* thread, void* (*start_routine)(void*), void* 
 #else
   // All threads have normal priority except prio_offset=0,1,2,3,4
   if (prio_offset >= 0 && prio_offset < 5) {
-    // Subtract one to the priority offset to avoid scheduling threads with the highest priority that could contend with
-    // OS critical tasks.
+    // Subtract one to the priority offset to avoid scheduling threads with the
+    // highest priority that could contend with OS critical tasks.
     param.sched_priority = sched_get_priority_max(SCHED_FIFO) - prio_offset - 1;
     if (pthread_attr_init(&attr)) {
       perror("pthread_attr_init");
@@ -105,7 +105,8 @@ bool threads_new_rt_cpu(pthread_t* thread, void* (*start_routine)(void*), void* 
     }
     if (pthread_attr_setschedparam(&attr, &param)) {
       perror("pthread_attr_setschedparam");
-      fprintf(stderr, "Error not enough privileges to set Scheduling priority\n");
+      fprintf(stderr,
+              "Error not enough privileges to set Scheduling priority\n");
     }
   } else {
 #endif
@@ -123,7 +124,8 @@ bool threads_new_rt_cpu(pthread_t* thread, void* (*start_routine)(void*), void* 
     }
     if (pthread_attr_setschedparam(&attr, &param)) {
       perror("pthread_attr_setschedparam");
-      fprintf(stderr, "Error not enough privileges to set Scheduling priority\n");
+      fprintf(stderr,
+              "Error not enough privileges to set Scheduling priority\n");
     }
   }
   if (cpu > 0) {
@@ -142,30 +144,37 @@ bool threads_new_rt_cpu(pthread_t* thread, void* (*start_routine)(void*), void* 
       CPU_SET((size_t)cpu, &cpuset);
     }
 
-    if (pthread_attr_setaffinity_np(&attr, sizeof(cpu_set_t), &cpuset)) {
-      perror("pthread_attr_setaffinity_np");
-    }
+    // if (pthread_attr_setaffinity_np(&attr, sizeof(cpu_set_t), &cpuset)) {
+    //   perror("pthread_attr_setaffinity_np");
+    // }
   }
 
-// TSAN seems to have issues with thread attributes when running as normal user, disable them in that case
+// TSAN seems to have issues with thread attributes when running as normal user,
+// disable them in that case
 #if HAVE_TSAN
   attr_enable = false;
 #endif
 
-  int err = pthread_create(thread, attr_enable ? &attr : NULL, start_routine, arg);
+  int err =
+      pthread_create(thread, attr_enable ? &attr : NULL, start_routine, arg);
   if (err) {
     if (EPERM == err) {
       fprintf(stderr,
-              "Warning: Failed to create thread with real-time priority. Creating it with normal priority: %s\n",
+              "Warning: Failed to create thread with real-time priority. "
+              "Creating it with normal priority: %s\n",
               strerror(err));
       err = pthread_create(thread, NULL, start_routine, arg);
       if (err) {
-        fprintf(stderr, "Error: Failed to create thread with normal priority: %s\n", strerror(err));
+        fprintf(stderr,
+                "Error: Failed to create thread with normal priority: %s\n",
+                strerror(err));
       } else {
         ret = true;
       }
     } else {
-      fprintf(stderr, "Error: Failed to create thread with real-time priority: %s\n", strerror(err));
+      fprintf(stderr,
+              "Error: Failed to create thread with real-time priority: %s\n",
+              strerror(err));
     }
   } else {
     ret = true;
@@ -176,14 +185,13 @@ bool threads_new_rt_cpu(pthread_t* thread, void* (*start_routine)(void*), void* 
   return ret;
 }
 
-void threads_print_self()
-{
-  pthread_t          thread;
-  cpu_set_t          cpuset;
+void threads_print_self() {
+  pthread_t thread;
+  cpu_set_t cpuset;
   struct sched_param param;
-  int                policy;
-  const char*        p;
-  int                s, j;
+  int policy;
+  const char *p;
+  int s, j;
 
   thread = pthread_self();
 
@@ -205,15 +213,15 @@ void threads_print_self()
   }
 
   switch (policy) {
-    case SCHED_FIFO:
-      p = "SCHED_FIFO";
-      break;
-    case SCHED_RR:
-      p = "SCHED_RR";
-      break;
-    default:
-      p = "Other";
-      break;
+  case SCHED_FIFO:
+    p = "SCHED_FIFO";
+    break;
+  case SCHED_RR:
+    p = "SCHED_RR";
+    break;
+  default:
+    p = "Other";
+    break;
   }
 
   printf("Sched policy is %s. Priority is %d\n", p, param.sched_priority);
