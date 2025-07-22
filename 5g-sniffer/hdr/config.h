@@ -73,7 +73,7 @@ struct config {
     double default_frequency = 627750000;
     uint64_t default_sample_rate = 23040000;
     // Parse configuration file
-    printf("Loading configuration file %s", config_path.c_str());
+    printf("Loading configuration file %s\n", config_path.c_str());
     toml::table toml = toml::parse_file(config_path);
     conf.file_path = toml["sniffer"]["file_path"].value_or(""sv).data();
     conf.sample_rate =
@@ -87,7 +87,7 @@ struct config {
           "PDCCH TOML config should be an array of tables, e.g. [[pdcch]]");
 
     toml::array *pdcch_tables = toml["pdcch"].as<toml::array>();
-    printf("Config contains %ld PDCCHs", pdcch_tables->size());
+    printf("Config contains %ld PDCCHs\n", pdcch_tables->size());
     for (toml::node &node : *pdcch_tables) {
       if (node.is_table()) {
         toml::table pdcch_table = *node.as_table();
@@ -129,28 +129,28 @@ struct config {
         toml::array *AL_thresholds_array =
             pdcch_table["AL_corr_thresholds"].as<toml::array>();
         if (AL_thresholds_array) {
-          printf("AL corr in the toml");
+          printf("AL corr in the toml\n");
           for (auto &&elem : *AL_thresholds_array) {
-            printf("AL corr in the toml element %f", elem.value_or(1.0));
+            printf("AL corr in the toml element %f\n", elem.value_or(1.0));
             pdcch_cfg.AL_corr_thresholds.push_back(elem.value_or(1.0));
           }
         } else {
-          printf("AL corr not in the toml");
+          printf("AL corr not in the toml\n");
           pdcch_cfg.AL_corr_thresholds = {0.9, 0.8, 0.7, 0.2, 0.2};
         }
 
         toml::array *num_candidates_per_AL_array =
             pdcch_table["num_candidates_per_AL"].as<toml::array>();
         if (num_candidates_per_AL_array) {
-          printf("num_candidates_per_AL in the toml, size is %ld",
+          printf("num_candidates_per_AL in the toml, size is %ld\n",
                  num_candidates_per_AL_array->size());
           for (auto &&elem : *num_candidates_per_AL_array) {
-            printf("num_candidates_per_AL in the toml element %d",
+            printf("num_candidates_per_AL in the toml element %d\n",
                    elem.value_or(1));
             pdcch_cfg.num_candidates_per_AL.push_back(elem.value_or(1));
           }
         } else {
-          printf("num_candidates_per_AL not in the toml");
+          printf("num_candidates_per_AL not in the toml\n");
           pdcch_cfg.num_candidates_per_AL = {8, 4, 2, 1, 0};
         }
 
@@ -170,7 +170,7 @@ struct config {
             pdcch_table["coreset_interleaver_size"].value_or(2);
         conf.pdcch_configs.push_back(pdcch_cfg);
       } else {
-        fprintf(stderr, "Unexpected config file format");
+        fprintf(stderr, "Unexpected config file format\n");
         exit(1);
       }
     }

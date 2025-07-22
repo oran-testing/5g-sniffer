@@ -17,16 +17,16 @@
  */
 
 #include <cstdint>
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 #include <unistd.h>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/cfg/env.h"
+#include "config.h"
+#include "exceptions.h"
 #include "file_sink.h"
 #include "sniffer.h"
-#include "exceptions.h"
-#include "config.h"
+#include "spdlog/cfg/env.h"
+#include "spdlog/spdlog.h"
 
 using namespace std;
 extern struct config config;
@@ -35,18 +35,18 @@ static void usage() {
   cout << "Usage: 5g_sniffer <path_to_config.toml>" << endl;
 }
 
-/** 
+/**
  * Main function of the 5G sniffer.
  *
- * @param argc 
- * @param argv 
+ * @param argc
+ * @param argv
  */
-int main(int argc, char** argv) {
+int main(int argc, char **argv) {
   string config_path;
 
-  #ifdef DEBUG_BUILD
-    SPDLOG_INFO("=== This is a debug mode build ===");
-  #endif
+#ifdef DEBUG_BUILD
+  SPDLOG_INFO("=== This is a debug mode build ===");
+#endif
 
   // Load spdlog level from environment variable
   // For example: export SPDLOG_LEVEL=debug
@@ -70,18 +70,22 @@ int main(int argc, char** argv) {
     config = config::load(config_path);
 
     // Create sniffer
-    if(config.file_path.compare("") == 0) {
-      sniffer sniffer(config.sample_rate, config.frequency, config.rf_args, config.ssb_numerology);
-      sniffer.start();  
+    if (config.file_path.compare("") == 0) {
+      sniffer sniffer(config.sample_rate, config.frequency, config.rf_args,
+                      config.ssb_numerology);
+      sniffer.start();
     } else {
-      sniffer sniffer(config.sample_rate, config.file_path.data(), config.ssb_numerology);
+      sniffer sniffer(config.sample_rate, config.file_path.data(),
+                      config.ssb_numerology);
       sniffer.start();
     }
-  } catch (sniffer_exception& e) {
+  } catch (sniffer_exception &e) {
     SPDLOG_ERROR(e.what());
     return 1;
-  } catch (const toml::parse_error& err) {
-    std::cerr << "Error parsing sniffer configuration file '" << *err.source().path << "':\n" << err.description() << "\n  (" << err.source().begin << ")\n";
+  } catch (const toml::parse_error &err) {
+    std::cerr << "Error parsing sniffer configuration file '"
+              << *err.source().path << "':\n"
+              << err.description() << "\n  (" << err.source().begin << ")\n";
     return 1;
   }
 
