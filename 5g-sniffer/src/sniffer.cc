@@ -39,7 +39,7 @@ using namespace std;
  * @param rf_args
  * @param ssb_numerology
  */
-sniffer::sniffer(uint64_t sample_rate, uint64_t frequency, string rf_args, uint16_t ssb_numerology) :
+sniffer::sniffer(uint64_t sample_rate, uint64_t frequency, string rf_args, uint16_t ssb_numerology, const std::string& zmq_address) :
   sample_rate(sample_rate),
   ssb_numerology(ssb_numerology),
   device(make_unique<sdr>(sample_rate, frequency, rf_args)) {
@@ -53,9 +53,10 @@ sniffer::sniffer(uint64_t sample_rate, uint64_t frequency, string rf_args, uint1
  * @param path
  * @param ssb_numerology
  */
-sniffer::sniffer(uint64_t sample_rate, string path, uint16_t ssb_numerology) :
+sniffer::sniffer(uint64_t sample_rate, string path, uint16_t ssb_numerology, const std::string& zmq_address) :
   sample_rate(sample_rate),
   ssb_numerology(ssb_numerology),
+  zmq_address_(zmq_address),
   device(make_unique<file_source>(sample_rate, path)) {
   init();
 }
@@ -67,7 +68,7 @@ void sniffer::init() {
   // Create blocks
   auto phy = make_shared<nr::phy>();  
   phy->ssb_bwp = make_unique<bandwidth_part>(3'840'000 * (1<<ssb_numerology), ssb_numerology, ssb_rb); // Default bandwidth part that captures at least 256 subcarriers (240 needed for SSB).
-  auto syncer = make_shared<class syncer>(sample_rate, phy);
+  auto syncer = make_shared<class syncer>(sample_rate, phy, this->zmq_address_);
 
   // Callbacks
   device->on_end = std::bind(&sniffer::stop, this);

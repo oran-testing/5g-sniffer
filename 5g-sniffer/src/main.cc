@@ -60,18 +60,45 @@ int main(int argc, char **argv) {
   spdlog::set_pattern("[%^%l%$] [%H:%M:%S.%f thread %t] [%s:%#] %v");
 
   // Get config path from command-line args
-  if (argc == 1) {
-    config_path = string("config.toml");
-  } else if (argc == 2) {
-    config_path = string(argv[1]);
-  } else {
-    usage();
-    exit(1);
+  std::string zmq_address_override; // To hold the optional address
+
+  if (argc < 2) {
+    std::cerr << "Usage: " << argv[0] << " <path_to_config.toml> [--zmq-addr <address>]" << std::endl;
+    return 1;
+  }
+  
+  // This loop finds the config path and the optional --zmq-addr flag
+  for (int i = 1; i < argc; ++i) {
+    std::string arg = argv[i];
+    if (arg == "--zmq-addr") {
+      if (i + 1 < argc) {
+        zmq_address_override = argv[++i];
+      } else {
+        std::cerr << "Error: --zmq-addr requires an address argument." << std::endl;
+        return 1;
+      }
+    } else {
+        config_path = arg; // Assume anything else is the config path
+    }
   }
 
+  if (config_path.empty()) {
+      std::cerr << "Error: Config file path is required." << std::endl;
+      return 1;
+  }
   try {
     // Load the config
     config = config::load(config_path);
+
+    std::string final_zmq_address;
+    if (!zmq_address_override.empty()) {
+        // Use the command-line override if it was provided
+        final_zmq_address = zmq_address_override;
+        std::cout << "Using command-line ZMQ address override." << std::endl;
+    } else {
+        final_zmq_address = "tcp://*:" + std::to_string(config.zmq_port);
+    }
+    std::cout << "ZMQ Publisher will listen on: " << final_zmq_address << std::endl;
 
     std::cout << "DEBUG: in MAIN before creation: " << influx_client_.get() << std::endl;
     if (config.influxdb_enabled) {
@@ -92,11 +119,11 @@ int main(int argc, char **argv) {
     // Create sniffer
     if (config.file_path.compare("") == 0) {
       sniffer sniffer(config.sample_rate, config.frequency, config.rf_args,
-                      config.ssb_numerology);
+                      config.ssb_numerology, final_zmq_address);
       sniffer.start();
     } else {
       sniffer sniffer(config.sample_rate, config.file_path.data(),
-                      config.ssb_numerology);
+                      config.ssb_numerology, final_zmq_address);
       sniffer.start();
     }
   } catch (sniffer_exception &e) {

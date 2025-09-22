@@ -65,6 +65,7 @@ struct config {
   uint8_t nid_2;
   string rf_args;
   uint16_t ssb_numerology;
+  uint16_t zmq_port;
   
   // InfluxDB configuration
   bool        influxdb_enabled;
@@ -90,6 +91,7 @@ struct config {
     conf.nid_2          = toml["sniffer"]["nid_2"].value_or(4);
     conf.rf_args        = toml["sniffer"]["rf_args"].value_or(""sv).data();
     conf.ssb_numerology = toml["sniffer"]["ssb_numerology"].value_or(0);
+    conf.zmq_port       = toml["sniffer"]["zmq_port"].value_or(23501);
 
     // InfluxDB config parsing
     conf.influxdb_enabled = toml["influxdb"]["enabled"].value_or(false);

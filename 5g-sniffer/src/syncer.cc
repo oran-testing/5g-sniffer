@@ -50,8 +50,8 @@ using namespace std;
 /**
  * Constructor for syncer.
  */
-syncer::syncer(uint64_t sample_rate, shared_ptr<nr::phy> phy)
-    : sample_rate(sample_rate), phy(phy) {
+syncer::syncer(uint64_t sample_rate, shared_ptr<nr::phy> phy, const std::string& zmq_address)
+    : sample_rate(sample_rate), phy(phy), zmq_address(zmq_address) {
   // Reserve some space for the processing queue
   processing_queue.reserve(1024 * 1024);
 
@@ -99,7 +99,7 @@ syncer::syncer(uint64_t sample_rate, shared_ptr<nr::phy> phy)
 
   // Create pool of 64 flows that can process samples in parallel after
   // synchronization
-  flow_pool = make_shared<nr::flow_pool>(64);
+  flow_pool = make_shared<nr::flow_pool>(64, this->zmq_address);
   this->connect(flow_pool);
 }
 

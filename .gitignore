@@ -12,3 +12,4 @@ iq_test.toml
 
 # other
 scripts/
+.vscode

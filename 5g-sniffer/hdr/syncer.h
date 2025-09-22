@@ -42,7 +42,7 @@ using namespace std;
  */
 class syncer : public worker {
   public:
-    syncer(uint64_t sample_rate, shared_ptr<nr::phy> phy);
+    syncer(uint64_t sample_rate, shared_ptr<nr::phy> phy, const std::string& zmq_address);
     virtual ~syncer();
     void process(shared_ptr<vector<complex<float>>>& samples, int64_t metadata) override;
   private:
@@ -51,6 +51,8 @@ class syncer : public worker {
     void find_pss();
     void find_sss();
     void fine_time_sync();
+    
+    std::string zmq_address;
 
     std::array<uint8_t, 4> pdcch_coreset0_get(uint16_t min_chann_bw, uint32_t ssb_scs, uint32_t pdcch_scs, uint8_t coreset0_idx);
 

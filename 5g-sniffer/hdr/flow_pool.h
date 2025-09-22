@@ -28,6 +28,7 @@
 #include <zmq.hpp>
 #include <semaphore>
 #include "flow.h"
+#include <string> 
 
 using namespace std;
 
@@ -38,7 +39,7 @@ using namespace std;
 namespace nr {
   class flow_pool : public worker {
     public:
-      flow_pool(uint64_t max_flows);
+      flow_pool(uint64_t max_flows, const std::string& zmq_address);
       virtual ~flow_pool();
       void process(shared_ptr<vector<complex<float>>>& samples, int64_t metadata) override;
       shared_ptr<flow> acquire_flow();

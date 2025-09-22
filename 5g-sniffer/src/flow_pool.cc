@@ -24,12 +24,13 @@
 #include <exception>
 #include <memory>
 #include <spdlog/spdlog.h>
+#include <string> 
 
 namespace nr {
   /** 
   * Constructor for flow_pool.
   */
-  flow_pool::flow_pool(uint64_t max_flows) :
+  flow_pool::flow_pool(uint64_t max_flows, const std::string& zmq_address) :
     max_flows(max_flows) {
     // Create available flows semaphore
     available_flows = make_shared<counting_semaphore<>>(0);
@@ -37,7 +38,7 @@ namespace nr {
     // Create zmq server socket
     zmq_socket = zmq::socket_t(main_ctx, zmq::socket_type::router);
     zmq_socket.set(zmq::sockopt::router_mandatory, 1);
-    zmq_socket.bind("tcp://127.0.0.1:23501");
+    zmq_socket.bind(zmq_address);
 
     this->pool.reserve(max_flows);
     for(uint64_t i = 0; i < max_flows; i++) {

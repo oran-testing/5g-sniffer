@@ -4,13 +4,14 @@ sample_rate = 23040000
 frequency = 1842500000
 nid_1 = 1
 ssb_numerology = 0
+zmq_port = 23501
 #rf_args = "type=b200,master_clock_rate=23.04e6"
 
 
 [[pdcch]]
 coreset_id = 1
-subcarrier_offset = 426
-num_prbs = 30
+subcarrier_offset = 419
+num_prbs = 29
 numerology = 0
 dci_sizes_list = [41]
 scrambling_id_start = 1
